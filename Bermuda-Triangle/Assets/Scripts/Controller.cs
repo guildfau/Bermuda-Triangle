@@ -23,11 +23,11 @@ public class Controller : MonoBehaviour {
     }
 
     //called every frame
-	void Update ()
+	void FixedUpdate ()
     {
         //code that moves the player
         if (isMoving())
-            gameObject.transform.Translate(getMovement().x, getMovement().y,0);
+            gameObject.transform.Translate(getMovement());
 
         //code for melee attack
         if (Input.GetButtonDown("Fire1"))
@@ -95,6 +95,8 @@ public class Controller : MonoBehaviour {
         //uses math functions to find rotation angle needed
         float angle = Mathf.Atan(dify / difx);
         angle = angle* Mathf.Rad2Deg;
+        //compensates for half of swing
+        angle += 20;
 
         //complicated logic to make angle in correct quadrant
         #region quadrant solver (angle now correct)
