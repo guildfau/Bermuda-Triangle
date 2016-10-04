@@ -13,7 +13,7 @@ public class Bullet : MonoBehaviour {
     private int speed = 7;
     #endregion
 
-    //sets to 0 temporarily to avoid errors
+    //initalizes location variables
     void Start()
     {
         //finds mouse position
