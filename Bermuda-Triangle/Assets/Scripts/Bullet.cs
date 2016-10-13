@@ -1,24 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-/**
- * Created by Daniel Resio
- * Handles bullet movement and duration
- **/
+/// <summary>
+/// Created by Daniel Resio
+/// Base class for all bullets, but also used for the player
+/// </summary>
 public class Bullet : MonoBehaviour {
 
-    #region public variables
+    #region variables
     private Vector3 direction;
     private int duration;
+    //default variable settings
     private int speed = 7;
+    private int damage = 10;
     #endregion
 
     //initalizes location variables
-    void Start()
+    public virtual void Start()
     {
         //finds mouse position
         Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Debug.Log(pos);
         Vector2 charPos = GameObject.FindWithTag("Player").transform.position;
+        Debug.Log(charPos);
         Vector2 dif = -(charPos - pos);
         //normalizes the vector
         direction = dif.normalized;
@@ -30,7 +34,7 @@ public class Bullet : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update()
+    public virtual void Update()
     {
         //Debug.Log("bullet position = " + gameObject.transform.position);
         //moves object towards vector until duration is up
@@ -45,4 +49,43 @@ public class Bullet : MonoBehaviour {
             Destroy(gameObject);
         }
     }
+
+    #region getters
+
+    /// <summary>
+    /// returns direction of bullet heading
+    /// </summary>
+    /// <returns></returns>
+    public Vector3 getDirection()
+    {
+        return direction;
+    }
+
+    /// <summary>
+    /// returns duration of bullet
+    /// </summary>
+    /// <returns></returns>
+    public int getDuration()
+    {
+        return duration;
+    }
+
+    /// <summary>
+    /// returns speed of bullet
+    /// </summary>
+    /// <returns></returns>
+    public int getSpeed()
+    {
+        return speed;
+    }
+
+    /// <summary>
+    /// returns damage given by bullet
+    /// </summary>
+    /// <returns></returns>
+    public int getDamage()
+    {
+        return damage;
+    }
+    #endregion
 }
