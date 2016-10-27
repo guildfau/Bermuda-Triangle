@@ -1,14 +1,18 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// Created by Daniel Resio.
 /// Class that is the base of all entities in the game.  
+/// Needs collider attached
+/// TODO: add switch to attack animations
 /// </summary>
 public abstract class Entity : MonoBehaviour {
 
+    private List<Collision> collisions = new List<Collision>();
+
     #region public variables
     public GameObject bullet;
-    public GameObject sword;
     #endregion
 
     /// <summary>
@@ -47,9 +51,6 @@ public abstract class Entity : MonoBehaviour {
         //uses math functions to find rotation angle needed
         float angle = Mathf.Atan(dify / difx);
         angle = angle * Mathf.Rad2Deg;
-        //compensates for half of swing
-        angle += 20;
-
 
         //complicated logic to make angle in correct quadrant
         #region quadrant solver (angle now correct)
@@ -75,12 +76,24 @@ public abstract class Entity : MonoBehaviour {
         }
         #endregion
 
-        //creates object using precalculated variables
-        //rotates on z axis
-        Debug.Log("creating sword");
-        GameObject childObject = (GameObject)(Instantiate(sword, gameObject.transform.position, Quaternion.Euler(new Vector3(0, 0, angle))));
-        //sets object to child of character 
-        childObject.transform.parent = gameObject.transform;
+        #region Handles attack directions
+        if (angle < -45 && angle > -135)
+        {
+            swordAttackRight();
+        }
+        else if (angle > -45 && angle < 45)
+        {
+            swordAttackUp();
+        }
+        else if(angle > 45 && angle < 135)
+        {
+            swordAttackLeft();
+        }
+        else
+        {
+            swordAttackDown();
+        }
+        #endregion
     }
 
     /// <summary>
@@ -88,8 +101,37 @@ public abstract class Entity : MonoBehaviour {
     /// </summary>
     public void fire()
     {
-        //creates bullet object
-        Instantiate(bullet, gameObject.transform.position, new Quaternion(0, 0, 0, 0));
+        Quaternion angle;
+
+        //finds mouse position
+        Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 charPos = gameObject.transform.position;
+        Vector2 direction = -(charPos - pos);
+
+        if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+        {
+            if (direction.x < 0)
+            {
+                angle = Quaternion.Euler(0,0,90);
+            }
+            else
+            {
+                angle = Quaternion.Euler(0, 0, -90);
+            }
+        }
+        else
+        {
+            if (direction.y < 0)
+            {
+                angle = Quaternion.Euler(0, 0, 180);
+            }
+            else
+            {
+                angle = Quaternion.Euler(0, 0, 0);
+            }
+        }
+
+        Instantiate(bullet, gameObject.transform.position, angle);
     }
 
     /// <summary>
@@ -104,19 +146,6 @@ public abstract class Entity : MonoBehaviour {
     }
 
     /// <summary>
-    /// will handle all of the collisions
-    /// </summary>
-    public void OnCollisionEnter(Collision col)
-    {
-        if (col.gameObject.tag == "enemyBullet")
-        {
-            Bullet objBullet = (Bullet)(col.gameObject.GetComponent("Script"));
-            Player_Stats.stats.health -= objBullet.getDamage();
-        }
-
-    }
-
-    /// <summary>
     /// returns if entity can attack
     /// </summary>
     /// <returns></returns>
@@ -126,4 +155,49 @@ public abstract class Entity : MonoBehaviour {
             return true;
         return false;
     }
+
+    #region adds and removes collisions from list
+    /// <summary>
+    /// adds collisions to the list
+    /// </summary>
+    /// <param name="c"></param>
+    void OnCollisionEnter(Collision c)
+    {
+        collisions.Add(c);
+    }
+
+    /// <summary>
+    /// removes collisions from the list
+    /// </summary>
+    /// <param name="c"></param>
+    void OnCollisionExit(Collision c)
+    {
+        string tag = c.gameObject.tag;
+        for (int i = 0; i < collisions.Count; i++)
+            if (collisions[i].gameObject.tag == tag)
+                collisions.RemoveAt(i);
+    }
+    #endregion
+
+    #region sword attack 
+    private void swordAttackRight()
+    {
+        Debug.Log("Sword Attack Right");
+    }
+    
+    private void swordAttackUp()
+    {
+        Debug.Log("Sword Attack Up");
+    }
+
+    private void swordAttackLeft()
+    {
+        Debug.Log("Sword Attack Left");
+    }
+
+    private void swordAttackDown()
+    {
+        Debug.Log("Sword Attack Down");
+    }
+    #endregion
 }
