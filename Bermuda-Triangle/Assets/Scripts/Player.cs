@@ -12,6 +12,7 @@ public sealed class Player : Entity {
     /// </summary>
     public override void checkForParts()
     {
+        Player_Stats.stats.maxHealth = 5;
         if (gameObject.name != "Player")
             Debug.LogError("Controller is not attached to the player");
         if (Player_Stats.stats.moveSpeed == 0)
@@ -61,9 +62,6 @@ public sealed class Player : Entity {
     /// </summary>
     public override void melee()
     {
-        if (GameObject.Find("" + sword.name + "clone") != null)
-            return;
-        //finds location of mouse
         Vector2 target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         meleeToTarget(target);
