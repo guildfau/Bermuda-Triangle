@@ -40,6 +40,14 @@ public abstract class Entity : MonoBehaviour {
     }
 
     /// <summary>
+    /// 
+    /// </summary>
+    public virtual void FixedUpdate()
+    {
+        handleCollisions();
+    }
+
+    /// <summary>
     /// swings sword at target
     /// </summary>
     /// <param name="target"></param>
@@ -134,6 +142,7 @@ public abstract class Entity : MonoBehaviour {
         Instantiate(bullet, gameObject.transform.position, angle);
     }
 
+    #region boolean questions
     /// <summary>
     /// returns true if the player should be moving
     /// </summary>
@@ -155,6 +164,7 @@ public abstract class Entity : MonoBehaviour {
             return true;
         return false;
     }
+    #endregion
 
     #region adds and removes collisions from list
     /// <summary>
@@ -200,4 +210,32 @@ public abstract class Entity : MonoBehaviour {
         Debug.Log("Sword Attack Down");
     }
     #endregion
+
+    /// <summary>
+    /// Checks if object is colliding with object with tag
+    /// </summary>
+    /// <param name="tag name"></param>
+    /// <returns></returns>
+    private Collision isColliding(string c)
+    {
+        for (int i = 0; i < collisions.Count; i++)
+        {
+            if (collisions[i].gameObject.tag == c)
+                return collisions[i];
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// uses the collisions object to handle information about collisions
+    /// </summary>
+    private void handleCollisions()
+    {
+        Collision col;
+        if ((col = isColliding("EnemyBullet")) != null)
+        {
+            Player_Stats.stats.health -= 10;
+            Destroy(col.gameObject);
+        }
+    }
 }

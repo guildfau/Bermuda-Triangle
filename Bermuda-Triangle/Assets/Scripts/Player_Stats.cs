@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 /// <summary>
 /// This class is to hold stats and info of player and have the ability to be saved
@@ -20,6 +22,10 @@ public class Player_Stats : MonoBehaviour {
     public int defence = 10;
     public int damage = 10;
     public int manna = 10;
+    #endregion
+
+    #region progress info
+
     #endregion
 
     void Awake()
