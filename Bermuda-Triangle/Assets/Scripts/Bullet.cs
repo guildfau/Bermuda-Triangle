@@ -8,6 +8,7 @@ using System.Collections;
 public class Bullet : MonoBehaviour {
 
     #region variables
+    private float speed = 0.5f;
     private int duration;
     private Vector2 direction;
     #endregion
@@ -15,12 +16,12 @@ public class Bullet : MonoBehaviour {
     //initalizes location variables
     public virtual void Start()
     {
-        direction = new Vector2(0, 1);
+        direction = new Vector2(0, speed);
         duration = 50;
     }
 
     // Update is called once per frame
-    public virtual void Update()
+    public virtual void FixedUpdate()
     {
         //Debug.Log("bullet position = " + gameObject.transform.position);
         //moves object towards vector until duration is up

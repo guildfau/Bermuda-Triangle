@@ -19,9 +19,9 @@ public sealed class Player : Entity {
             Debug.LogError("Speed is set to 0!");
     }
 
-    //called every frame
-	void FixedUpdate ()
+    public override void FixedUpdate()
     {
+        base.FixedUpdate();
         //code that moves the player
         if (isMoving())
             gameObject.transform.Translate(getMovement());
@@ -32,14 +32,14 @@ public sealed class Player : Entity {
             melee();
             //Debug.Log("melee attack");
         }
-        
+
         //code for ranged attack
         if (Input.GetButtonDown("Fire2"))
         {
             fire();
             //Debug.Log("ranged attack");
         }
-	}
+    }
 
     /// <summary>
     /// returns what the movement vector should be
