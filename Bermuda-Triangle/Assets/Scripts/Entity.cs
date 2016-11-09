@@ -229,7 +229,7 @@ public abstract class Entity : MonoBehaviour {
     /// <summary>
     /// uses the collisions object to handle information about collisions
     /// </summary>
-    private void handleCollisions()
+    public virtual void handleCollisions()
     {
         Collision col;
         if ((col = isColliding("EnemyBullet")) != null)
