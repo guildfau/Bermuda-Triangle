@@ -10,6 +10,7 @@ using UnityEngine;
 public abstract class Entity : MonoBehaviour {
 
     private List<Collision> collisions = new List<Collision>();
+    private Animator anim;
 
     #region public variables
     public GameObject bullet;
@@ -32,11 +33,17 @@ public abstract class Entity : MonoBehaviour {
     public abstract void checkForParts();
 
     /// <summary>
+    /// method that allows for managing of animation and other items at start
+    /// </summary>
+    public abstract void atStart();
+
+    /// <summary>
     /// checks for parts to avoid errors. Other things can go here too if need be
     /// </summary>
     public void Start()
     {
         checkForParts();
+        atStart();
     }
 
     /// <summary>
@@ -229,7 +236,7 @@ public abstract class Entity : MonoBehaviour {
     /// <summary>
     /// uses the collisions object to handle information about collisions
     /// </summary>
-    public virtual void handleCollisions()
+    private void handleCollisions()
     {
         Collision col;
         if ((col = isColliding("EnemyBullet")) != null)
@@ -238,4 +245,17 @@ public abstract class Entity : MonoBehaviour {
             Destroy(col.gameObject);
         }
     }
+
+    #region getter and setter for animator
+    public void setAnimator(Animator newAnimator)
+    {
+        anim = newAnimator;
+    }
+
+    public Animator getAnimator()
+    {
+        return anim;
+    }
+    #endregion
+
 }

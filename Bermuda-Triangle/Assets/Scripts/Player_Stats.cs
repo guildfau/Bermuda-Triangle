@@ -14,7 +14,7 @@ public class Player_Stats : MonoBehaviour {
     #region stats
     public int maxHealth = 10;
     public int health = 10;
-    public float moveSpeed = 5;
+    public float moveSpeed = 10;
     public int maxAmmo = 10;
     public int ammo =10;
     public int attackCooldown = 30;
