@@ -3,9 +3,9 @@ using UnityEngine;
 
 /// <summary>
 /// Created by Daniel Resio.
-/// Class that is the base of all entities in the game.  
-/// Needs collider attached
-/// TODO: add switch to attack animations
+/// Class that is the base of all entities in the game. 
+/// Some animations already implemented in code
+/// TODO: collider info
 /// </summary>
 public abstract class Entity : MonoBehaviour {
 
@@ -52,6 +52,7 @@ public abstract class Entity : MonoBehaviour {
     public virtual void FixedUpdate()
     {
         handleCollisions();
+        handleAnimation();
     }
 
     /// <summary>
@@ -243,6 +244,48 @@ public abstract class Entity : MonoBehaviour {
         {
             Player_Stats.stats.health -= 10;
             Destroy(col.gameObject);
+        }
+    }
+
+    private void handleAnimation()
+    {
+        if (isMoving())
+        {
+            Vector2 temp = getMovement();
+            getAnimator().SetBool("Movement", true);
+            #region sets variables for directions
+
+            if (Mathf.Abs(temp.x) > Mathf.Abs(temp.y))
+            {
+                if (temp.x > 0 && getAnimator().GetInteger("Direction") != 3)
+                {
+                    //3 is right
+                    getAnimator().SetInteger("Direction", 3);
+                }
+                else if (temp.x < 0 && getAnimator().GetInteger("Direction") != 2)
+                {
+                    //2 is left
+                    getAnimator().SetInteger("Direction", 2);
+                }
+            }
+            else
+            {
+                if (temp.y > 0 && getAnimator().GetInteger("Direction") != 1)
+                {
+                    //1 is up
+                    getAnimator().SetInteger("Direction", 1);
+                }
+                else if (temp.y < 0 && getAnimator().GetInteger("Direction") != 0)
+                {
+                    //0 is down
+                    getAnimator().SetInteger("Direction", 0);
+                }
+            }
+            #endregion
+        }
+        else
+        {
+            getAnimator().SetBool("Movement", false);
         }
     }
 

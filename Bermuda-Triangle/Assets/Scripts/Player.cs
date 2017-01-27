@@ -4,9 +4,8 @@ using System;
 
 /**
  * Created by Daniel Resio
- * must be attached to character
+ * must be attached to character with sprites
  **/
- //TODO: ANIMATION STUFF
 public sealed class Player : Entity {
 
     /// <summary>
@@ -34,45 +33,8 @@ public sealed class Player : Entity {
         base.FixedUpdate();
         //code that moves the player
         if (isMoving())
-        {
-            Vector2 temp = getMovement();
-            gameObject.transform.Translate(temp);
-            //sets variable for movement in animator
-            getAnimator().SetBool("Movement", true);
-            #region sets variables for directions
+            gameObject.transform.Translate(getMovement());
 
-            if(Mathf.Abs(temp.x) > Mathf.Abs(temp.y))
-            {
-                if(temp.x > 0 && getAnimator().GetInteger("Direction") !=3)
-                {
-                    //3 is right
-                    getAnimator().SetInteger("Direction", 3);
-                }
-                else if(temp.x < 0 && getAnimator().GetInteger("Direction") != 2)
-                {
-                    //2 is left
-                    getAnimator().SetInteger("Direction", 2);
-                }
-            }
-            else
-            {
-                if (temp.y > 0 && getAnimator().GetInteger("Direction") != 1)
-                {
-                    //1 is up
-                    getAnimator().SetInteger("Direction", 1);
-                }
-                else if (temp.y < 0 && getAnimator().GetInteger("Direction") != 0)
-                {
-                    //0 is down
-                    getAnimator().SetInteger("Direction", 0);
-                }
-            }
-            #endregion
-        }
-        else
-        {
-            getAnimator().SetBool("Movement", false);
-        }
         //code for melee attack
         if (Input.GetButtonDown("Fire1"))
         {
