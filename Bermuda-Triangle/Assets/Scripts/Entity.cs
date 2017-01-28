@@ -3,13 +3,14 @@ using UnityEngine;
 
 /// <summary>
 /// Created by Daniel Resio.
-/// Class that is the base of all entities in the game.  
-/// Needs collider attached
-/// TODO: add switch to attack animations
+/// Class that is the base of all entities in the game. 
+/// Some animations already implemented in code
+/// TODO: collider info
 /// </summary>
 public abstract class Entity : MonoBehaviour {
 
     private List<Collision> collisions = new List<Collision>();
+    private Animator anim;
 
     #region public variables
     public GameObject bullet;
@@ -32,11 +33,17 @@ public abstract class Entity : MonoBehaviour {
     public abstract void checkForParts();
 
     /// <summary>
+    /// method that allows for managing of animation and other items at start
+    /// </summary>
+    public abstract void atStart();
+
+    /// <summary>
     /// checks for parts to avoid errors. Other things can go here too if need be
     /// </summary>
     public void Start()
     {
         checkForParts();
+        atStart();
     }
 
     /// <summary>
@@ -45,6 +52,7 @@ public abstract class Entity : MonoBehaviour {
     public virtual void FixedUpdate()
     {
         handleCollisions();
+        handleAnimation();
     }
 
     /// <summary>
@@ -229,7 +237,7 @@ public abstract class Entity : MonoBehaviour {
     /// <summary>
     /// uses the collisions object to handle information about collisions
     /// </summary>
-    public virtual void handleCollisions()
+    private void handleCollisions()
     {
         Collision col;
         if ((col = isColliding("EnemyBullet")) != null)
@@ -238,4 +246,59 @@ public abstract class Entity : MonoBehaviour {
             Destroy(col.gameObject);
         }
     }
+
+    private void handleAnimation()
+    {
+        if (isMoving())
+        {
+            Vector2 temp = getMovement();
+            getAnimator().SetBool("Movement", true);
+            #region sets variables for directions
+
+            if (Mathf.Abs(temp.x) > Mathf.Abs(temp.y))
+            {
+                if (temp.x > 0 && getAnimator().GetInteger("Direction") != 3)
+                {
+                    //3 is right
+                    getAnimator().SetInteger("Direction", 3);
+                }
+                else if (temp.x < 0 && getAnimator().GetInteger("Direction") != 2)
+                {
+                    //2 is left
+                    getAnimator().SetInteger("Direction", 2);
+                }
+            }
+            else
+            {
+                if (temp.y > 0 && getAnimator().GetInteger("Direction") != 1)
+                {
+                    //1 is up
+                    getAnimator().SetInteger("Direction", 1);
+                }
+                else if (temp.y < 0 && getAnimator().GetInteger("Direction") != 0)
+                {
+                    //0 is down
+                    getAnimator().SetInteger("Direction", 0);
+                }
+            }
+            #endregion
+        }
+        else
+        {
+            getAnimator().SetBool("Movement", false);
+        }
+    }
+
+    #region getter and setter for animator
+    public void setAnimator(Animator newAnimator)
+    {
+        anim = newAnimator;
+    }
+
+    public Animator getAnimator()
+    {
+        return anim;
+    }
+    #endregion
+
 }

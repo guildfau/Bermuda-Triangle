@@ -1,11 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 /**
  * Created by Daniel Resio
- * must be attached to character
+ * must be attached to character with sprites
  **/
 public sealed class Player : Entity {
+
+    /// <summary>
+    /// adds animation item and things
+    /// </summary>
+    public override void atStart()
+    {
+        setAnimator(GetComponent<Animator>());
+    }
 
     /// <summary>
     /// checks for parts. Needed from Entity class
