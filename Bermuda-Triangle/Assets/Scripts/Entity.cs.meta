@@ -1,10 +1,15 @@
 fileFormatVersion: 2
 guid: 8522a0a67503c8049a87fa42ee591fa7
-timeCreated: 1485406638
+timeCreated: 1486332569
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - bullet: {instanceID: 0}
+  - meleeUp: {fileID: 1730644216652916, guid: 5fc59d828d8da8e4db8085b24a5c15cc, type: 2}
+  - meleeDown: {instanceID: 0}
+  - meleeLeft: {instanceID: 0}
+  - meleeRight: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
