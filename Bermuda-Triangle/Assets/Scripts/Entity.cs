@@ -1,19 +1,26 @@
 ﻿using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 /// <summary>
 /// Created by Daniel Resio.
 /// Class that is the base of all entities in the game. 
 /// Some animations already implemented in code
+/// needs rigidbody
 /// TODO: collider info
 /// </summary>
 public abstract class Entity : MonoBehaviour {
 
-    private List<Collision> collisions = new List<Collision>();
+    private List<Collider2D> collisions = new List<Collider2D>();
     private Animator anim;
+    private bool canMove = true;
 
     #region public variables
     public GameObject bullet;
+    public GameObject meleeUp;
+    public GameObject meleeDown;
+    public GameObject meleeLeft;
+    public GameObject meleeRight;
     #endregion
 
     /// <summary>
@@ -38,25 +45,37 @@ public abstract class Entity : MonoBehaviour {
     public abstract void atStart();
 
     /// <summary>
+    /// uses the collisions object to handle information about collisions
+    /// </summary>
+    public abstract void handleCollisions();
+
+    /// <summary>
     /// checks for parts to avoid errors. Other things can go here too if need be
     /// </summary>
     public void Start()
     {
         checkForParts();
         atStart();
+        Rigidbody2D rigidbody = (Rigidbody2D)gameObject.GetComponent("Rigidbody2D");
+        rigidbody.freezeRotation = true;
     }
 
     /// <summary>
-    /// 
+    /// things to do at update
     /// </summary>
     public virtual void FixedUpdate()
     {
+        //code that moves entity
+        if (isMoving() && canMove)
+            gameObject.transform.Translate(getMovement());
+
+
         handleCollisions();
         handleAnimation();
     }
 
     /// <summary>
-    /// swings sword at target
+    /// swings  at target
     /// </summary>
     /// <param name="target"></param>
     public void meleeToTarget(Vector2 target)
@@ -95,19 +114,19 @@ public abstract class Entity : MonoBehaviour {
         #region Handles attack directions
         if (angle < -45 && angle > -135)
         {
-            swordAttackRight();
+            StartCoroutine(AttackRight());
         }
         else if (angle > -45 && angle < 45)
         {
-            swordAttackUp();
+            StartCoroutine(AttackUp());
         }
         else if(angle > 45 && angle < 135)
         {
-            swordAttackLeft();
+            StartCoroutine(AttackLeft());
         }
         else
         {
-            swordAttackDown();
+            StartCoroutine(AttackDown());
         }
         #endregion
     }
@@ -179,7 +198,7 @@ public abstract class Entity : MonoBehaviour {
     /// adds collisions to the list
     /// </summary>
     /// <param name="c"></param>
-    void OnCollisionEnter(Collision c)
+    void OnTriggerEnter2D(Collider2D c)
     {
         collisions.Add(c);
     }
@@ -188,7 +207,7 @@ public abstract class Entity : MonoBehaviour {
     /// removes collisions from the list
     /// </summary>
     /// <param name="c"></param>
-    void OnCollisionExit(Collision c)
+    void OnTriggerExit2D(Collider2D c)
     {
         string tag = c.gameObject.tag;
         for (int i = 0; i < collisions.Count; i++)
@@ -197,25 +216,41 @@ public abstract class Entity : MonoBehaviour {
     }
     #endregion
 
-    #region sword attack 
-    private void swordAttackRight()
+    #region  attack systems
+    private IEnumerator AttackRight()
     {
-        Debug.Log("Sword Attack Right");
+        canMove = false;
+        getAnimator().SetBool("MeleeRight", true);
+        yield return new WaitForSeconds(.8f);
+        getAnimator().SetBool("MeleeRight", false);
+        canMove = true;
     }
     
-    private void swordAttackUp()
+    private IEnumerator AttackUp()
     {
-        Debug.Log("Sword Attack Up");
+        canMove = false;
+        getAnimator().SetBool("MeleeBack", true);
+        yield return new WaitForSeconds(.8f);
+        getAnimator().SetBool("MeleeBack", false);
+        canMove = true;
     }
 
-    private void swordAttackLeft()
+    private IEnumerator AttackLeft()
     {
-        Debug.Log("Sword Attack Left");
+        canMove = false;
+        getAnimator().SetBool("MeleeLeft", true);
+        yield return new WaitForSeconds(.8f);
+        getAnimator().SetBool("MeleeLeft", false);
+        canMove = true;
     }
 
-    private void swordAttackDown()
+    private IEnumerator AttackDown()
     {
-        Debug.Log("Sword Attack Down");
+        canMove = false;
+        getAnimator().SetBool("MeleeFront", true);
+        yield return new WaitForSeconds(.8f);
+        getAnimator().SetBool("MeleeFront", false);
+        canMove = true;
     }
     #endregion
 
@@ -224,7 +259,7 @@ public abstract class Entity : MonoBehaviour {
     /// </summary>
     /// <param name="tag name"></param>
     /// <returns></returns>
-    private Collision isColliding(string c)
+    public Collider2D isColliding(string c)
     {
         for (int i = 0; i < collisions.Count; i++)
         {
@@ -235,21 +270,11 @@ public abstract class Entity : MonoBehaviour {
     }
 
     /// <summary>
-    /// uses the collisions object to handle information about collisions
+    /// this is to handle all of the animation switches
     /// </summary>
-    private void handleCollisions()
-    {
-        Collision col;
-        if ((col = isColliding("EnemyBullet")) != null)
-        {
-            Player_Stats.stats.health -= 10;
-            Destroy(col.gameObject);
-        }
-    }
-
     private void handleAnimation()
     {
-        if (isMoving())
+        if (isMoving() && canMove)
         {
             Vector2 temp = getMovement();
             getAnimator().SetBool("Movement", true);
@@ -289,7 +314,7 @@ public abstract class Entity : MonoBehaviour {
         }
     }
 
-    #region getter and setter for animator
+    #region getter and setter
     public void setAnimator(Animator newAnimator)
     {
         anim = newAnimator;

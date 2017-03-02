@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 /**
  * Created by Daniel Resio
@@ -31,9 +32,6 @@ public sealed class Player : Entity {
     public override void FixedUpdate()
     {
         base.FixedUpdate();
-        //code that moves the player
-        if (isMoving())
-            gameObject.transform.Translate(getMovement());
 
         //code for melee attack
         if (Input.GetButtonDown("Fire1"))
@@ -59,11 +57,31 @@ public sealed class Player : Entity {
         //gets axis of movement
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
+        //setting movement to left right up and down
+        if (Mathf.Abs(h) > Mathf.Abs(v))
+        {
+            v = 0;
+        }
+        else
+        {
+            h = 0;
+        }
         //multiplies movement by speed
         h /= Player_Stats.stats.moveSpeed;
         v /= Player_Stats.stats.moveSpeed;
         //Debug.Log("Movement is (" + h + ") horizontal and (" + v + ") vertical");
         return new Vector2(h, v);
+    }
+    
+    /// <summary>
+    /// colision handler
+    /// </summary>
+    public override void handleCollisions()
+    {
+        if (isColliding("Slime") != null)
+        {
+            Player_Stats.stats.gameNotOver = false;
+        }
     }
 
     /// <summary>
