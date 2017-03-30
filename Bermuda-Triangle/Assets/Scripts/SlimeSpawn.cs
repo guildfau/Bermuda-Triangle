@@ -7,7 +7,7 @@ public class SlimeSpawn : MonoBehaviour {
     public GameObject Slime;
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 
         if (Random.Range(0f, 100f) < 1)
         {

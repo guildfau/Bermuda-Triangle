@@ -17,10 +17,15 @@ public class HighscoreRestart : MonoBehaviour {
         settings1 = GameObject.Find("GetName");
         submitButton = GameObject.Find("Submit");
         highScore = GameObject.FindGameObjectWithTag("HighscorePanel");
-        settings1.SetActive(false);
         highScore.SetActive(false);
     }
-	
+
+	public void ReturnToMenu()
+	{
+		SceneManager.LoadScene ("MainMenu");
+		Time.timeScale = 1;
+	}
+
     public void exit()
     {
         Application.Quit();

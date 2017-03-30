@@ -25,7 +25,7 @@ public sealed class Player : Entity {
         Player_Stats.stats.maxHealth = 5;
         if (gameObject.name != "Player")
             Debug.LogError("Controller is not attached to the player");
-        if (Player_Stats.stats.moveSpeed == 0)
+        if (Player_Stats.stats.horizontalMoveSpeed == 0 && Player_Stats.stats.verticalMoveSpeed == 0)
             Debug.LogError("Speed is set to 0!");
     }
 
@@ -67,8 +67,8 @@ public sealed class Player : Entity {
             h = 0;
         }
         //multiplies movement by speed
-        h /= Player_Stats.stats.moveSpeed;
-        v /= Player_Stats.stats.moveSpeed;
+        h /= Player_Stats.stats.horizontalMoveSpeed;
+        v /= Player_Stats.stats.verticalMoveSpeed;
         //Debug.Log("Movement is (" + h + ") horizontal and (" + v + ") vertical");
         return new Vector2(h, v);
     }
